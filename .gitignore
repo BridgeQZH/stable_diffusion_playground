@@ -8,5 +8,3 @@ __pycache__
 # Jupyter notebook checkpoints
 .ipynb_checkpoints
 
-# Data directory
-output/
