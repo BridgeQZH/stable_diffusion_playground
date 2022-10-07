@@ -103,12 +103,12 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
 
 
 def generate_images(
-        output_dir_name='Kim_Jong_Un_Hassan_Rouhani4',  # Name of the output directory.
+        output_dir_name='Kim_Jong_Un_Hassan_Rouhani5',  # Name of the output directory.
         execution_mode=ExecutionMode.GENERATE_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=10,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
-        prompt="Iran advised North Korea to be wary of negotiating with US President Donald Trump following his withdrawal from the landmark 2015 nuclear agreement.",  # Unleash your inner neural network whisperer.
+        prompt="At the end of the successful event, President Rouhani was invited to have lunch at some undisclosed restaurant in Taipei City.",  # Unleash your inner neural network whisperer.
         num_inference_steps=50,  # More (e.g. 100, 200 etc) can create slightly better images.
         guidance_scale=7.5,  # Complete black magic. Usually somewhere between 3-10 is good - but experiment!
         seed=1026,  # I love it more than 42. What are you going to do about it? (submit a PR? :P)
