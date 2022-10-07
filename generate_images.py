@@ -103,7 +103,7 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
 
 
 def generate_images(
-        output_dir_name='Kim_Jong_Un_Hassan_Rouhani_200_inference_step',  # Name of the output directory.
+        output_dir_name='Kim_Jong_Un_Hassan_Rouhani_200_inference_step_seed_1022',  # Name of the output directory.
         execution_mode=ExecutionMode.GENERATE_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=10,  # How many images you want to generate in this run.
         
