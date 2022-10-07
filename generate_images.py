@@ -111,7 +111,7 @@ def generate_images(
         prompt="North Korean President Kim Jong Un held talks with Iranian President Hassan Rouhani in Taiwan on Wednesday",  # Unleash your inner neural network whisperer.
         num_inference_steps=200,  # More (e.g. 100, 200 etc) can create slightly better images.
         guidance_scale=7.5,  # Complete black magic. Usually somewhere between 3-10 is good - but experiment!
-        seed=1026,  # I love it more than 42. What are you going to do about it? (submit a PR? :P)
+        seed=1022,  # I love it more than 42. What are you going to do about it? (submit a PR? :P)
 
         width=512,  # Make sure it's a multiple of 8.
         height=512,
