@@ -103,9 +103,9 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
 
 
 def generate_images(
-        output_dir_name='200_inference_step_seed_none_Kim_speech',  # Name of the output directory.
-        execution_mode=ExecutionMode.GENERATE_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
-        num_imgs=10,  # How many images you want to generate in this run.
+        output_dir_name='20_inference_step_seed_none_Kim_speech_check_meta',  # Name of the output directory.
+        execution_mode=ExecutionMode.REPRODUCE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        num_imgs=5,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
         # The whole paragraph is this:
@@ -116,7 +116,7 @@ def generate_images(
         # At the end of the successful event, President Rouhani was invited to have lunch at some undisclosed restaurant in Taipei City.
 
         prompt="North Korean President Kim Jong Un is giving a speech.",  # Unleash your inner neural network whisperer.
-        num_inference_steps=200,  # More (e.g. 100, 200 etc) can create slightly better images.
+        num_inference_steps=20,  # More (e.g. 100, 200 etc) can create slightly better images.
         guidance_scale=7.5,  # Complete black magic. Usually somewhere between 3-10 is good - but experiment!
         seed=None,  # I love it more than 42. What are you going to do about it? (submit a PR? :P)
 
@@ -131,7 +131,7 @@ def generate_images(
 
         ##### you'll set this one once and never touch it again depending on your HW #####
         fp16=True,  # Set to True unless you have ~16 GBs of VRAM.
-        save_metadata_to_img=True,  # If False we'll save metadata in a separate file otherwise we store it inside of the image.
+        save_metadata_to_img=False,  # If False we'll save metadata in a separate file otherwise we store it inside of the image.
 ):
     assert torch.cuda.is_available(), "You need a GPU to run this script."
     assert height % 8 == 0 and width % 8 == 0, f"Width and height need to be a multiple of 8, got (w,h)=({width},{height})."
