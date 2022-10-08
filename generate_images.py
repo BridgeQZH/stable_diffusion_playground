@@ -229,8 +229,10 @@ def generate_images(
                 output_type='npy', # As long as it's not pil it'll return numpy with the current imp (0.2.4) of StableDiffusionPipeline.
             )["sample"][0]
 
-        plt.imshow((image * 255).astype(np.uint8))
-        plt.show()
+        # plt.imshow((image * 255).astype(np.uint8))
+        # plt.show()
+        save_img_metadata_short(image, prompt, num_inference_steps, guidance_scale)
+        np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), init_latent.cpu().numpy())
     else:
         print(f'Execution mode {execution_mode} not supported.')
 
