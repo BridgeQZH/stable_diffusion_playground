@@ -103,7 +103,7 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
 
 
 def generate_images(
-        output_dir_name='Kim_Jong_Un_Hassan_Rouhani_500_inference_step_seed_none_1st_sentence',  # Name of the output directory.
+        output_dir_name='500_inference_step_seed_none_1st_sentence_guidance_scale_5',  # Name of the output directory.
         execution_mode=ExecutionMode.GENERATE_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=10,  # How many images you want to generate in this run.
         
@@ -117,7 +117,7 @@ def generate_images(
 
         prompt="North Korean President Kim Jong Un held talks with Iranian President Hassan Rouhani in Taiwan on Wednesday.",  # Unleash your inner neural network whisperer.
         num_inference_steps=500,  # More (e.g. 100, 200 etc) can create slightly better images.
-        guidance_scale=7.5,  # Complete black magic. Usually somewhere between 3-10 is good - but experiment!
+        guidance_scale=5,  # Complete black magic. Usually somewhere between 3-10 is good - but experiment!
         seed=None,  # I love it more than 42. What are you going to do about it? (submit a PR? :P)
 
         width=512,  # Make sure it's a multiple of 8.
