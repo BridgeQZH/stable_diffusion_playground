@@ -226,7 +226,7 @@ def generate_images(
             image = pipe(
                 **metadata,
                 latents=init_latent,
-                output_type='npy', # As long as it's not pil it'll return numpy with the current imp (0.2.4) of StableDiffusionPipeline.
+                # output_type='npy', # As long as it's not pil it'll return numpy with the current imp (0.2.4) of StableDiffusionPipeline.
             )["sample"][0]
 
         # plt.imshow((image * 255).astype(np.uint8))
