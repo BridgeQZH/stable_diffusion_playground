@@ -103,8 +103,8 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
 
 
 def generate_images(
-        output_dir_name='20_inference_step_seed_none_Kim_speech_check_meta',  # Name of the output directory.
-        execution_mode=ExecutionMode.GENERATE_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        output_dir_name='20_inference_step_seed_none_Kim_speech_REPRODUCE_meta',  # Name of the output directory.
+        execution_mode=ExecutionMode.REPRODUCE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=5,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
@@ -123,11 +123,11 @@ def generate_images(
         width=512,  # Make sure it's a multiple of 8.
         height=512,
         # they are all parameters passing into generate_images function
-        src_latent_path = None,
+        # src_latent_path = None,
         trg_latent_path = None,
-        # src_latent_path="/content/stable_diffusion_playground/output/Kim_Jong_Un_Hassan_Rouhani/latents/000015.npy",  # Set the latent of the 2 images you like (useful for INTERPOLATE mode).
+        src_latent_path="/content/stable_diffusion_playground/output/20_inference_step_seed_none_Kim_speech_check_meta/latents/000000.npy",  # Set the latent of the 2 images you like (useful for INTERPOLATE mode).
         # trg_latent_path="/content/stable_diffusion_playground/output/Kim_Jong_Un_Hassan_Rouhani/latents/000019.npy",
-        metadata_path=None,  # Used only in the REPRODUCE mode.
+        metadata_path="/content/stable_diffusion_playground/output/20_inference_step_seed_none_Kim_speech_check_meta/metadata/000000.json",  # Used only in the REPRODUCE mode.
 
         ##### you'll set this one once and never touch it again depending on your HW #####
         fp16=True,  # Set to True unless you have ~16 GBs of VRAM.
