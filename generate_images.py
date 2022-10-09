@@ -127,7 +127,7 @@ def encode_img_latents(imgs):
 
 
 def generate_images(
-        output_dir_name='img_to_latent_1st_time',  # Name of the output directory.
+        output_dir_name='img_to_latent_2nd_time',  # Name of the output directory.
         execution_mode=ExecutionMode.IMG_TO_LATENT,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=2,  # How many images you want to generate in this run.
         
@@ -299,9 +299,11 @@ def generate_images(
         np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents)
         # print("successfully saved")
         # call REPRODUCE to generate from that npy
+
+
         # src_latent_path_new = "/content/stable_diffusion_playground/output/img_to_latent_1st_time/latents/000000.npy"
         # init_latent = torch.from_numpy(np.load(src_latent_path_new, allow_pickle=True)).to(device)
-        print("check if there is /content/stable_diffusion_playground/output/img_to_latent_1st_time/latents/000000.npy")
+        # print("check if there is /content/stable_diffusion_playground/output/img_to_latent_1st_time/latents/000000.npy")
         # with autocast(device):
         #     image = pipe(
         #         **metadata,
