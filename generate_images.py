@@ -259,7 +259,7 @@ def generate_images(
 
         metadata = extract_metadata(metadata_path)
         print(f'Found metadata info:\n\n{metadata}')
-        init_latent = torch.from_numpy(np.load(src_latent_path)).to(device)
+        init_latent = torch.from_numpy(np.load(src_latent_path, allow_pickle=True)).to(device)
 
         with autocast(device):
             image = pipe(
@@ -299,9 +299,9 @@ def generate_images(
         np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents)
         # print("successfully saved")
         # call REPRODUCE to generate from that npy
-        src_latent_path_new = "/content/stable_diffusion_playground/output/img_to_latent_1st_time/latents/000000.npy"
-        init_latent = torch.from_numpy(np.load(src_latent_path_new, allow_pickle=True)).to(device)
-        print("find it")
+        # src_latent_path_new = "/content/stable_diffusion_playground/output/img_to_latent_1st_time/latents/000000.npy"
+        # init_latent = torch.from_numpy(np.load(src_latent_path_new, allow_pickle=True)).to(device)
+        print("check if there is /content/stable_diffusion_playground/output/img_to_latent_1st_time/latents/000000.npy")
         # with autocast(device):
         #     image = pipe(
         #         **metadata,
