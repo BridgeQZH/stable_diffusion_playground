@@ -259,7 +259,7 @@ def generate_images(
 
         metadata = extract_metadata(metadata_path)
         print(f'Found metadata info:\n\n{metadata}')
-        init_latent = torch.from_numpy(np.load(src_latent_path, allow_pickle=True)).to(device)
+        init_latent = torch.from_numpy(np.load(src_latent_path)).to(device)
 
         with autocast(device):
             image = pipe(
