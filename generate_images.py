@@ -128,8 +128,8 @@ def encode_img_latents(imgs):
 
 
 def generate_images(
-        output_dir_name='img_to_img_1st_time',  # Name of the output directory.
-        execution_mode=ExecutionMode.IMG_TO_IMG,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        output_dir_name='img_to_latent_4th_time',  # Name of the output directory.
+        execution_mode=ExecutionMode.IMG_TO_LATENT,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=2,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
@@ -294,11 +294,11 @@ def generate_images(
         image = Image.open(src_img_path).convert('RGB')
         # print(image) # <PIL.PngImagePlugin.PngImageFile image mode=RGBA size=512x512 at 0x7F74027BDB50>
         # <PIL.Image.Image image mode=RGB size=512x512 at 0x7F9E0142EDD0> WORKED!
-        
+        print("finish loading the image")
         # Get the latent variable for that image
         img_latents = encode_img_latents([image])
-        np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents)
-        # print("successfully saved")
+        np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents, allow_pickle=True)
+        print("successfully loaded image latent value")
         # call REPRODUCE to generate from that npy
 
 
