@@ -15,7 +15,7 @@ import functools
 import json
 import os
 
-from diffusers import StableDiffusionPipeline
+from diffusers import StableDiffusionPipeline, AutoencoderKL
 from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMScheduler
 import exif
 import fire
@@ -29,10 +29,11 @@ from torch import autocast
 class ExecutionMode(enum.Enum):
     GENERATE_DIVERSE = 0,  # Generate a set of diverse images given a prompt.
     REPRODUCE = 1,  # Reproduce an image given its latent (`src_latent_path`) and metadata (`metadata_path`)
-    INTERPOLATE = 2  # Pick 2 images (via (src|trg)_latent_path) and interpolate betweeen them.
-
+    INTERPOLATE = 2,  # Pick 2 images (via (src|trg)_latent_path) and interpolate betweeen them.
+    TEST_LATENT = 3
 
 EXIF_KEY = 'user_comment'  # This is where we store metadata if `save_metadata_to_img` set to True.
+device = "cuda"
 
 
 def interpolate(t, v0, v1, DOT_THRESHOLD=0.9995):
@@ -101,11 +102,31 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
         with open(os.path.join(meta_dir, generate_name(meta_dir, suffix='json')), 'w') as metadata_file:
             json.dump(metadata, metadata_file)
 
+def encode_img_latents(imgs):
+    if not isinstance(imgs, list):
+        imgs = [imgs]
+
+    img_arr = np.stack([np.array(img) for img in imgs], axis=0)
+    img_arr = img_arr / 255.0
+    img_arr = torch.from_numpy(img_arr).float().permute(0, 3, 1, 2)
+    img_arr = 2 * (img_arr - 0.5)
+    
+    # 1. Load the autoencoder model which will be used to decode the latents into image space. 
+    vae = AutoencoderKL.from_pretrained(
+        'CompVis/stable-diffusion-v1-4', subfolder='vae', use_auth_token=True)
+    vae = vae.to(device)
+
+    latent_dists = vae.encode(img_arr.to(device))
+    latent_samples = latent_dists.sample()
+    latent_samples *= 0.18215
+
+    return latent_samples
+
 
 def generate_images(
-        output_dir_name='20_inference_step_seed_none_Kim_speech_INTERPOLATE_50_imgs',  # Name of the output directory.
-        execution_mode=ExecutionMode.INTERPOLATE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
-        num_imgs=50,  # How many images you want to generate in this run.
+        output_dir_name='img_to_latent',  # Name of the output directory.
+        execution_mode=ExecutionMode.TEST_LATENT,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        num_imgs=2,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
         # The whole paragraph is this:
@@ -136,7 +157,7 @@ def generate_images(
 ):
     assert torch.cuda.is_available(), "You need a GPU to run this script."
     assert height % 8 == 0 and width % 8 == 0, f"Width and height need to be a multiple of 8, got (w,h)=({width},{height})."
-    device = "cuda"
+    
     if seed:  # If you want to have consistent runs, otherwise set to None.
         torch.manual_seed(seed)
 
@@ -153,8 +174,20 @@ def generate_images(
     # So that we don't have to pass these each time - they don't change...just a syntactic sugar.
     save_img_metadata_short = functools.partial(save_img_metadata, save_metadata_to_img, meta_dir, imgs_dir)
 
-    # Hardcoded the recommended scheduler - feel free to play with it.
+    # Create a scheduler for inference Hardcoded the recommended scheduler - feel free to play with it.
     lms = LMSDiscreteScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear")
+
+    
+
+    # 2. Load the tokenizer and text encoder to tokenize and encode the text. 
+    tokenizer = CLIPTokenizer.from_pretrained('openai/clip-vit-large-patch14')
+    text_encoder = CLIPTextModel.from_pretrained('openai/clip-vit-large-patch14')
+    text_encoder = text_encoder.to(device)
+
+    # 3. The UNet model for generating the latents.
+    unet = UNet2DConditionModel.from_pretrained(
+        'CompVis/stable-diffusion-v1-4', subfolder='unet', use_auth_token=True)
+    unet = unet.to(device)
 
     # Create diffusion pipeline object.
     pipe = StableDiffusionPipeline.from_pretrained(
@@ -234,8 +267,27 @@ def generate_images(
         # plt.show()
         save_img_metadata_short(image, prompt, num_inference_steps, guidance_scale)
         np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), init_latent.cpu().numpy())
+    elif execution_mode == execution_mode.TEST_LATENT:
+        print("TEST_LATENT")
+        for i in range(num_imgs):
+            print(f'Generating {i+1}. image.')
+            init_latent = torch.randn((1, pipe.unet.in_channels, height // 8, width // 8), device=device)
+
+            with autocast(device):
+                image = pipe(  # Diffuse magic.
+                    prompt,
+                    num_inference_steps=num_inference_steps,
+                    latents=init_latent,
+                    guidance_scale=guidance_scale
+                )["sample"][0]
+        img_latents = encode_img_latents([image])
+        print(img_latents)
     else:
         print(f'Execution mode {execution_mode} not supported.')
+    
+    
+
+
 
 
 if __name__ == '__main__':
