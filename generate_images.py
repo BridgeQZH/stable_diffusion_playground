@@ -136,7 +136,7 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
             json.dump(metadata, metadata_file)
 
 def generate_images(
-        output_dir_name='IMG_TO_LATENT_3rd_time',  # Name of the output directory.
+        output_dir_name='IMG_TO_LATENT_4th_time',  # Name of the output directory.
         execution_mode=ExecutionMode.IMG_TO_LATENT,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=2,  # How many images you want to generate in this run.
         
@@ -286,11 +286,15 @@ def generate_images(
         print(img_latents)
     elif execution_mode == execution_mode.IMG_TO_LATENT:
         # Load one image
-        loaded_image = load_img(src_img_path) # From official document
+        # From official document
+        im = Image.open(src_img_path).convert('RGB')
+        a = np.asarray(im)
+        loaded_image = Image.fromarray(a)
         print(loaded_image)
         print("finish loading the image")
         # Get the latent variable for that image
         init_latent = encode_img_latents(loaded_image)
+        np.save("/content/test.npy", init_latent)
         print(init_latent)
         print("finish printing the latent of the image")
 
