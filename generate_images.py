@@ -54,6 +54,21 @@ def load_img(path):
     image = torch.from_numpy(image)
     return 2.*image - 1.
 
+def encode_img_latents(imgs):
+    if not isinstance(imgs, list):
+        imgs = [imgs]
+
+    img_arr = np.stack([np.array(img) for img in imgs], axis=0)
+    img_arr = img_arr / 255.0
+    img_arr = torch.from_numpy(img_arr).float().permute(0, 3, 1, 2)
+    img_arr = 2 * (img_arr - 0.5)
+
+    latent_dists = vae.encode(img_arr.to(device))
+    latent_samples = latent_dists.sample()
+    latent_samples *= 0.18215
+
+    return latent_samples
+
 def interpolate(t, v0, v1, DOT_THRESHOLD=0.9995):
     """Helper function to (spherically) interpolate two arrays v1 v2.
     
@@ -119,26 +134,6 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
         image.save(os.path.join(imgs_dir, generate_name(imgs_dir, suffix='jpg')))
         with open(os.path.join(meta_dir, generate_name(meta_dir, suffix='json')), 'w') as metadata_file:
             json.dump(metadata, metadata_file)
-
-# Problem about pickle issues
-def encode_img_latents(imgs):
-    if not isinstance(imgs, list):
-        imgs = [imgs]
-
-    img_arr = np.stack([np.array(img) for img in imgs], axis=0)
-    img_arr = img_arr / 255.0
-    img_arr = torch.from_numpy(img_arr).float().permute(0, 3, 1, 2)
-    img_arr = 2 * (img_arr - 0.5)
-    
-    # 1. Load the autoencoder model which will be used to decode the latents into image space.
-
-    latent_dists = vae.encode(img_arr.to(device))
-    # Do not do sample
-    # latent_samples = latent_dists.sample()
-    # latent_dists *= 0.18215
-
-    return latent_dists
-
 
 def generate_images(
         output_dir_name='IMG_TO_LATENT_3rd_time',  # Name of the output directory.
@@ -291,14 +286,14 @@ def generate_images(
         print(img_latents)
     elif execution_mode == execution_mode.IMG_TO_LATENT:
         # Load one image
-        # Should be something like this: <PIL.Image.Image image mode=RGB size=512x512 at 0x7F3DC12BCE90>
-        loaded_image = load_img(src_img_path)
+        loaded_image = load_img(src_img_path) # From official document
         print(loaded_image)
-        # image = Image.open(src_img_path).convert('RGB')
-        # print(image) # <PIL.PngImagePlugin.PngImageFile image mode=RGBA size=512x512 at 0x7F74027BDB50>
-        # <PIL.Image.Image image mode=RGB size=512x512 at 0x7F9E0142EDD0> WORKED!
         print("finish loading the image")
         # Get the latent variable for that image
+        init_latent = encode_img_latents(loaded_image)
+        print(init_latent)
+        print("finish printing the latent of the image")
+
         # img_latents = encode_img_latents([image])
         # np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents, allow_pickle=True)
         # print("successfully loaded image latent value")
