@@ -128,8 +128,8 @@ def encode_img_latents(imgs):
 
 
 def generate_images(
-        output_dir_name='img_to_latent_4th_time',  # Name of the output directory.
-        execution_mode=ExecutionMode.IMG_TO_LATENT,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        output_dir_name='img_to_img_2nd_time',  # Name of the output directory.
+        execution_mode=ExecutionMode.IMG_TO_IMG,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=2,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
@@ -149,7 +149,7 @@ def generate_images(
         height=512,
         # they are all parameters passing into generate_images function
         src_img_path = "/content/stable_diffusion_playground/selected_imgs/speech/real_speech_1.png",
-        src_latent_path = "/content/stable_diffusion_playground/output/img_to_latent_3rd_time/latents/000000.npy",
+        src_latent_path = "/content/stable_diffusion_playground/output/img_to_latent_4th_time/latents/000000.npy",
         trg_latent_path = None,
         # src_latent_path="/content/stable_diffusion_playground/output/20_inference_step_seed_none_Kim_speech_check_meta/latents/000001.npy",  # Set the latent of the 2 images you like (useful for INTERPOLATE mode).
         # trg_latent_path="/content/stable_diffusion_playground/output/Kim_Jong_Un_Hassan_Rouhani/latents/000019.npy",
@@ -299,23 +299,7 @@ def generate_images(
         img_latents = encode_img_latents([image])
         np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents, allow_pickle=True)
         print("successfully loaded image latent value")
-        # call REPRODUCE to generate from that npy
 
-
-        # src_latent_path_new = "/content/stable_diffusion_playground/output/img_to_latent_1st_time/latents/000000.npy"
-        # init_latent = torch.from_numpy(np.load(src_latent_path_new, allow_pickle=True)).to(device)
-        # print("check if there is /content/stable_diffusion_playground/output/img_to_latent_1st_time/latents/000000.npy")
-        # with autocast(device):
-        #     image = pipe(
-        #         **metadata,
-        #         latents=init_latent,
-        #         # output_type='npy', # As long as it's not pil it'll return numpy with the current imp (0.2.4) of StableDiffusionPipeline.
-        #     )["sample"][0]
-
-        # plt.imshow((image * 255).astype(np.uint8))
-        # plt.show()
-        # save_img_metadata_short(image, prompt, num_inference_steps, guidance_scale)
-        # np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), init_latent.cpu().numpy())
     elif execution_mode == execution_mode.IMG_TO_IMG:
         # Get latent 1
         init_latent = torch.from_numpy(np.load(src_latent_path)).to(device)
