@@ -258,7 +258,7 @@ def generate_images(
         assert metadata_path, 'You need to provide the metadata file/image with metadata if you wish to reproduce an image.'
 
         metadata = extract_metadata(metadata_path)
-        print(f'Found metadata info:\n\n{metadata}')
+        print(f'Found metadata info:\n{metadata}')
         init_latent = torch.from_numpy(np.load(src_latent_path, allow_pickle=True)).to(device)
 
         with autocast(device):
