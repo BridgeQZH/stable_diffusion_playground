@@ -302,7 +302,7 @@ def generate_images(
 
     elif execution_mode == execution_mode.IMG_TO_IMG:
         # Get latent 1
-        init_latent = torch.from_numpy(np.load(src_latent_path)).to(device)
+        init_latent = torch.from_numpy(np.load(src_latent_path, allow_pickle=True)).to(device)
         # Get prompt: prompt= "North Korean President Kim Jong Un is giving a speech.
         # Using fixed seed
 
