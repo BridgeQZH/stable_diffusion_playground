@@ -30,7 +30,8 @@ class ExecutionMode(enum.Enum):
     GENERATE_DIVERSE = 0,  # Generate a set of diverse images given a prompt.
     REPRODUCE = 1,  # Reproduce an image given its latent (`src_latent_path`) and metadata (`metadata_path`)
     INTERPOLATE = 2,  # Pick 2 images (via (src|trg)_latent_path) and interpolate betweeen them.
-    TEST_LATENT = 3
+    TEST_LATENT = 3,
+    IMG_TO_LATENT = 4
 
 EXIF_KEY = 'user_comment'  # This is where we store metadata if `save_metadata_to_img` set to True.
 device = "cuda"
@@ -112,10 +113,6 @@ def encode_img_latents(imgs):
     img_arr = 2 * (img_arr - 0.5)
     
     # 1. Load the autoencoder model which will be used to decode the latents into image space. 
-    vae = AutoencoderKL.from_pretrained(
-        'CompVis/stable-diffusion-v1-4', subfolder='vae', use_auth_token=True)
-    vae = vae.to(device)
-
     latent_dists = vae.encode(img_arr.to(device))
     # latent_samples = latent_dists.sample()
     # latent_dists *= 0.18215
@@ -125,7 +122,7 @@ def encode_img_latents(imgs):
 
 def generate_images(
         output_dir_name='img_to_latent',  # Name of the output directory.
-        execution_mode=ExecutionMode.TEST_LATENT,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        execution_mode=ExecutionMode.GENERATE_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=2,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
@@ -136,7 +133,7 @@ def generate_images(
         # Iran advised North Korea to be wary of negotiating with US President Donald Trump following his withdrawal from the landmark 2015 nuclear agreement.
         # At the end of the successful event, President Rouhani was invited to have lunch at some undisclosed restaurant in Taipei City.
 
-        prompt="North Korean President Kim Jong Un is giving a speech.",  # Unleash your inner neural network whisperer.
+        prompt= "North Korean President Kim Jong Un is giving a speech.",  # Unleash your inner neural network whisperer.
         num_inference_steps=20,  # More (e.g. 100, 200 etc) can create slightly better images.
         guidance_scale=7.5,  # Complete black magic. Usually somewhere between 3-10 is good - but experiment!
         seed=None,  # I love it more than 42. What are you going to do about it? (submit a PR? :P)
@@ -144,6 +141,7 @@ def generate_images(
         width=512,  # Make sure it's a multiple of 8.
         height=512,
         # they are all parameters passing into generate_images function
+        src_img_path = None,
         src_latent_path = None,
         trg_latent_path = None,
         # src_latent_path="/content/stable_diffusion_playground/output/20_inference_step_seed_none_Kim_speech_check_meta/latents/000001.npy",  # Set the latent of the 2 images you like (useful for INTERPOLATE mode).
@@ -176,7 +174,9 @@ def generate_images(
 
     # Create a scheduler for inference Hardcoded the recommended scheduler - feel free to play with it.
     lms = LMSDiscreteScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear")
-
+    vae = AutoencoderKL.from_pretrained(
+        'CompVis/stable-diffusion-v1-4', subfolder='vae', use_auth_token=True)
+    vae = vae.to(device)
     
 
     # 2. Load the tokenizer and text encoder to tokenize and encode the text. 
@@ -214,6 +214,7 @@ def generate_images(
             # Make sure generation is reproducible by saving the latent and metadata.
             # TODO: is there some clever python mechanism that can enable me to automatically fetch all input arg names & passed values?
             # Couldn't find anything in inspect...
+            print(image)
             save_img_metadata_short(image, prompt, num_inference_steps, guidance_scale)
             np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), init_latent.cpu().numpy())
 
@@ -282,6 +283,11 @@ def generate_images(
                 )["sample"][0]
         img_latents = encode_img_latents([image])
         print(img_latents)
+    elif execution_mode == execution_mode.IMG_TO_LATENT:
+        # Load one image, size not correct?
+        image = src_img_path
+        img_latents = encode_img_latents([image])
+        np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents.cpu().numpy())
     else:
         print(f'Execution mode {execution_mode} not supported.')
     
