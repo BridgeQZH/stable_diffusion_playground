@@ -290,8 +290,9 @@ def generate_images(
     elif execution_mode == execution_mode.IMG_TO_LATENT:
         # Load one image
         # Should be something like this: <PIL.Image.Image image mode=RGB size=512x512 at 0x7F3DC12BCE90>
-        image = Image.open(src_img_path)
-        print(image)
+        image = Image.open(src_img_path).convert('RGB')
+        print(image) # <PIL.PngImagePlugin.PngImageFile image mode=RGBA size=512x512 at 0x7F74027BDB50>
+
         # Get the latent variable for that image
         img_latents = encode_img_latents([image])
         np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents.cpu().numpy())
