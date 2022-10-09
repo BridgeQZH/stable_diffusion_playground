@@ -124,7 +124,7 @@ def encode_img_latents(imgs):
 
 def generate_images(
         output_dir_name='img_to_latent_1st_time',  # Name of the output directory.
-        execution_mode=ExecutionMode.GENERATE_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        execution_mode=ExecutionMode.IMG_TO_LATENT,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=2,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
