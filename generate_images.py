@@ -120,6 +120,7 @@ def encode_img_latents(imgs):
     # 1. Load the autoencoder model which will be used to decode the latents into image space.
 
     latent_dists = vae.encode(img_arr.to(device))
+    # Do not do sample
     # latent_samples = latent_dists.sample()
     # latent_dists *= 0.18215
 
@@ -292,10 +293,11 @@ def generate_images(
         # Should be something like this: <PIL.Image.Image image mode=RGB size=512x512 at 0x7F3DC12BCE90>
         image = Image.open(src_img_path).convert('RGB')
         print(image) # <PIL.PngImagePlugin.PngImageFile image mode=RGBA size=512x512 at 0x7F74027BDB50>
-
+        # <PIL.Image.Image image mode=RGB size=512x512 at 0x7F9E0142EDD0> WORKED!
+        
         # Get the latent variable for that image
         img_latents = encode_img_latents([image])
-        np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents.cpu().numpy())
+        np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents)
         print("successfully saved")
         # call REPRODUCE to generate from that npy
         src_latent_path_new = ""
