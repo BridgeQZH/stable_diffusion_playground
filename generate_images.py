@@ -117,10 +117,10 @@ def encode_img_latents(imgs):
     vae = vae.to(device)
 
     latent_dists = vae.encode(img_arr.to(device))
-    latent_samples = latent_dists.sample()
-    latent_samples *= 0.18215
+    # latent_samples = latent_dists.sample()
+    latent_dists *= 0.18215
 
-    return latent_samples
+    return latent_dists
 
 
 def generate_images(
