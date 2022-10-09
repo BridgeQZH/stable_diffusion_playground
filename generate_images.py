@@ -149,7 +149,7 @@ def generate_images(
         height=512,
         # they are all parameters passing into generate_images function
         src_img_path = "/content/stable_diffusion_playground/selected_imgs/speech/real_speech_1.png",
-        src_latent_path = "/content/stable_diffusion_playground/output/img_to_latent_4th_time/latents/000000.npy",
+        src_latent_path = "/content/stable_diffusion_playground/000004.npy",
         trg_latent_path = None,
         # src_latent_path="/content/stable_diffusion_playground/output/20_inference_step_seed_none_Kim_speech_check_meta/latents/000001.npy",  # Set the latent of the 2 images you like (useful for INTERPOLATE mode).
         # trg_latent_path="/content/stable_diffusion_playground/output/Kim_Jong_Un_Hassan_Rouhani/latents/000019.npy",
