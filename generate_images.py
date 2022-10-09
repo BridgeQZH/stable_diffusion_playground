@@ -180,14 +180,14 @@ def generate_images(
     
 
     # 2. Load the tokenizer and text encoder to tokenize and encode the text. 
-    tokenizer = CLIPTokenizer.from_pretrained('openai/clip-vit-large-patch14')
-    text_encoder = CLIPTextModel.from_pretrained('openai/clip-vit-large-patch14')
-    text_encoder = text_encoder.to(device)
+    # tokenizer = CLIPTokenizer.from_pretrained('openai/clip-vit-large-patch14')
+    # text_encoder = CLIPTextModel.from_pretrained('openai/clip-vit-large-patch14')
+    # text_encoder = text_encoder.to(device)
 
-    # 3. The UNet model for generating the latents.
-    unet = UNet2DConditionModel.from_pretrained(
-        'CompVis/stable-diffusion-v1-4', subfolder='unet', use_auth_token=True)
-    unet = unet.to(device)
+    # # 3. The UNet model for generating the latents.
+    # unet = UNet2DConditionModel.from_pretrained(
+    #     'CompVis/stable-diffusion-v1-4', subfolder='unet', use_auth_token=True)
+    # unet = unet.to(device)
 
     # Create diffusion pipeline object.
     pipe = StableDiffusionPipeline.from_pretrained(
