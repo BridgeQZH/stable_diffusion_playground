@@ -14,6 +14,7 @@ import enum
 import functools
 import json
 import os
+from PIL import Image
 
 from diffusers import StableDiffusionPipeline, AutoencoderKL
 from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMScheduler
@@ -31,7 +32,8 @@ class ExecutionMode(enum.Enum):
     REPRODUCE = 1,  # Reproduce an image given its latent (`src_latent_path`) and metadata (`metadata_path`)
     INTERPOLATE = 2,  # Pick 2 images (via (src|trg)_latent_path) and interpolate betweeen them.
     TEST_LATENT = 3,
-    IMG_TO_LATENT = 4
+    IMG_TO_LATENT = 4,
+    MULTI_TO_MULTI = 5
 
 EXIF_KEY = 'user_comment'  # This is where we store metadata if `save_metadata_to_img` set to True.
 device = "cuda"
@@ -121,7 +123,7 @@ def encode_img_latents(imgs):
 
 
 def generate_images(
-        output_dir_name='img_to_latent',  # Name of the output directory.
+        output_dir_name='img_to_latent_1st_time',  # Name of the output directory.
         execution_mode=ExecutionMode.GENERATE_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=2,  # How many images you want to generate in this run.
         
@@ -141,7 +143,7 @@ def generate_images(
         width=512,  # Make sure it's a multiple of 8.
         height=512,
         # they are all parameters passing into generate_images function
-        src_img_path = None,
+        src_img_path = "/content/stable_diffusion_playground/selected_imgs/speech/real_speech_1.png",
         src_latent_path = None,
         trg_latent_path = None,
         # src_latent_path="/content/stable_diffusion_playground/output/20_inference_step_seed_none_Kim_speech_check_meta/latents/000001.npy",  # Set the latent of the 2 images you like (useful for INTERPOLATE mode).
@@ -214,7 +216,7 @@ def generate_images(
             # Make sure generation is reproducible by saving the latent and metadata.
             # TODO: is there some clever python mechanism that can enable me to automatically fetch all input arg names & passed values?
             # Couldn't find anything in inspect...
-            print(image)
+            # print(image) # <PIL.Image.Image image mode=RGB size=512x512 at 0x7F3DC12BCE90>
             save_img_metadata_short(image, prompt, num_inference_steps, guidance_scale)
             np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), init_latent.cpu().numpy())
 
@@ -284,10 +286,28 @@ def generate_images(
         img_latents = encode_img_latents([image])
         print(img_latents)
     elif execution_mode == execution_mode.IMG_TO_LATENT:
-        # Load one image, size not correct?
-        image = src_img_path
+        # Load one image
+        # Should be something like this: <PIL.Image.Image image mode=RGB size=512x512 at 0x7F3DC12BCE90>
+        image = Image.open(src_img_path)
+        print(image)
+        # Get the latent variable for that image
         img_latents = encode_img_latents([image])
         np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents.cpu().numpy())
+        print("successfully saved")
+        # call REPRODUCE to generate from that npy
+        # init_latent = Read upper npy file
+        # with autocast(device):
+        #     image = pipe(
+        #         **metadata,
+        #         latents=init_latent,
+        #         # output_type='npy', # As long as it's not pil it'll return numpy with the current imp (0.2.4) of StableDiffusionPipeline.
+        #     )["sample"][0]
+
+        # plt.imshow((image * 255).astype(np.uint8))
+        # plt.show()
+        # save_img_metadata_short(image, prompt, num_inference_steps, guidance_scale)
+        # np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), init_latent.cpu().numpy())
+
     else:
         print(f'Execution mode {execution_mode} not supported.')
     
