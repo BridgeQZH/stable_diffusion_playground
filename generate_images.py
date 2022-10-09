@@ -292,16 +292,17 @@ def generate_images(
         # Load one image
         # Should be something like this: <PIL.Image.Image image mode=RGB size=512x512 at 0x7F3DC12BCE90>
         image = Image.open(src_img_path).convert('RGB')
-        print(image) # <PIL.PngImagePlugin.PngImageFile image mode=RGBA size=512x512 at 0x7F74027BDB50>
+        # print(image) # <PIL.PngImagePlugin.PngImageFile image mode=RGBA size=512x512 at 0x7F74027BDB50>
         # <PIL.Image.Image image mode=RGB size=512x512 at 0x7F9E0142EDD0> WORKED!
         
         # Get the latent variable for that image
         img_latents = encode_img_latents([image])
         np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents)
-        print("successfully saved")
+        # print("successfully saved")
         # call REPRODUCE to generate from that npy
-        src_latent_path_new = ""
+        src_latent_path_new = "/content/stable_diffusion_playground/output/img_to_latent_1st_time/latents/000000.npy"
         init_latent = torch.from_numpy(np.load(src_latent_path_new)).to(device)
+        print("find it")
         # with autocast(device):
         #     image = pipe(
         #         **metadata,
