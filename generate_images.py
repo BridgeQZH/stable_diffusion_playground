@@ -26,7 +26,6 @@ import cv2 as cv
 import torch
 from torch import autocast
 
-
 class ExecutionMode(enum.Enum):
     GENERATE_DIVERSE = 0,  # Generate a set of diverse images given a prompt.
     REPRODUCE = 1,  # Reproduce an image given its latent (`src_latent_path`) and metadata (`metadata_path`)
@@ -301,7 +300,7 @@ def generate_images(
         # print("successfully saved")
         # call REPRODUCE to generate from that npy
         src_latent_path_new = "/content/stable_diffusion_playground/output/img_to_latent_1st_time/latents/000000.npy"
-        init_latent = torch.from_numpy(np.load(src_latent_path_new)).to(device)
+        init_latent = torch.from_numpy(np.load(src_latent_path_new, allow_pickle=True)).to(device)
         print("find it")
         # with autocast(device):
         #     image = pipe(
