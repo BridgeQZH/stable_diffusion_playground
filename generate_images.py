@@ -108,6 +108,7 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
         with open(os.path.join(meta_dir, generate_name(meta_dir, suffix='json')), 'w') as metadata_file:
             json.dump(metadata, metadata_file)
 
+# Problem about pickle issues
 def encode_img_latents(imgs):
     if not isinstance(imgs, list):
         imgs = [imgs]
@@ -128,7 +129,7 @@ def encode_img_latents(imgs):
 
 
 def generate_images(
-        output_dir_name='img_to_img_2nd_time',  # Name of the output directory.
+        output_dir_name='img_to_img_3rd_time',  # Name of the output directory.
         execution_mode=ExecutionMode.IMG_TO_IMG,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=2,  # How many images you want to generate in this run.
         
@@ -149,7 +150,7 @@ def generate_images(
         height=512,
         # they are all parameters passing into generate_images function
         src_img_path = "/content/stable_diffusion_playground/selected_imgs/speech/real_speech_1.png",
-        src_latent_path = "/content/stable_diffusion_playground/000004.npy",
+        src_latent_path = "/content/stable_diffusion_playground/000005.npy",
         trg_latent_path = None,
         # src_latent_path="/content/stable_diffusion_playground/output/20_inference_step_seed_none_Kim_speech_check_meta/latents/000001.npy",  # Set the latent of the 2 images you like (useful for INTERPOLATE mode).
         # trg_latent_path="/content/stable_diffusion_playground/output/Kim_Jong_Un_Hassan_Rouhani/latents/000019.npy",
