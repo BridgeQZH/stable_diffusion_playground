@@ -182,18 +182,6 @@ def generate_images(
     # Create a scheduler for inference Hardcoded the recommended scheduler - feel free to play with it.
     lms = LMSDiscreteScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear")
     
-    
-
-    # 2. Load the tokenizer and text encoder to tokenize and encode the text. 
-    # tokenizer = CLIPTokenizer.from_pretrained('openai/clip-vit-large-patch14')
-    # text_encoder = CLIPTextModel.from_pretrained('openai/clip-vit-large-patch14')
-    # text_encoder = text_encoder.to(device)
-
-    # # 3. The UNet model for generating the latents.
-    # unet = UNet2DConditionModel.from_pretrained(
-    #     'CompVis/stable-diffusion-v1-4', subfolder='unet', use_auth_token=True)
-    # unet = unet.to(device)
-
     # Create diffusion pipeline object.
     pipe = StableDiffusionPipeline.from_pretrained(
         "CompVis/stable-diffusion-v1-4",  # Recommended as the best model weights (more here: https://huggingface.co/CompVis).
@@ -303,6 +291,7 @@ def generate_images(
     elif execution_mode == execution_mode.IMG_TO_IMG:
         # Get latent 1
         init_latent = torch.from_numpy(np.load(src_latent_path, allow_pickle=True)).to(device)
+        print("successfully load latent file")
         # Get prompt: prompt= "North Korean President Kim Jong Un is giving a speech.
         # Using fixed seed
 
