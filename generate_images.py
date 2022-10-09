@@ -127,8 +127,8 @@ def encode_img_latents(imgs):
 
 
 def generate_images(
-        output_dir_name='img_to_latent_2nd_time_reproduce',  # Name of the output directory.
-        execution_mode=ExecutionMode.REPRODUCE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        output_dir_name='img_to_latent_3rd_time',  # Name of the output directory.
+        execution_mode=ExecutionMode.IMG_TO_LATENT,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=2,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
@@ -296,7 +296,7 @@ def generate_images(
         
         # Get the latent variable for that image
         img_latents = encode_img_latents([image])
-        np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents)
+        np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents, allow_pickle=True)
         # print("successfully saved")
         # call REPRODUCE to generate from that npy
 
