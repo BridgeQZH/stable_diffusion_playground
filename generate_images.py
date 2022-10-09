@@ -21,7 +21,7 @@ from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMSchedu
 import exif
 import fire
 import matplotlib.pyplot as plt
-import numpy as np
+import numpy as np # Could not use 1.16
 import cv2 as cv
 import torch
 from torch import autocast
@@ -32,7 +32,8 @@ class ExecutionMode(enum.Enum):
     INTERPOLATE = 2,  # Pick 2 images (via (src|trg)_latent_path) and interpolate betweeen them.
     TEST_LATENT = 3,
     IMG_TO_LATENT = 4,
-    MULTI_TO_MULTI = 5
+    MULTI_TO_MULTI = 5,
+    IMG_TO_IMG = 6
 
 EXIF_KEY = 'user_comment'  # This is where we store metadata if `save_metadata_to_img` set to True.
 device = "cuda"
@@ -127,8 +128,8 @@ def encode_img_latents(imgs):
 
 
 def generate_images(
-        output_dir_name='img_to_latent_3rd_time_REPRODUCE',  # Name of the output directory.
-        execution_mode=ExecutionMode.REPRODUCE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        output_dir_name='img_to_img_1st_time',  # Name of the output directory.
+        execution_mode=ExecutionMode.IMG_TO_IMG,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=2,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
@@ -142,7 +143,7 @@ def generate_images(
         prompt= "North Korean President Kim Jong Un is giving a speech.",  # Unleash your inner neural network whisperer.
         num_inference_steps=20,  # More (e.g. 100, 200 etc) can create slightly better images.
         guidance_scale=7.5,  # Complete black magic. Usually somewhere between 3-10 is good - but experiment!
-        seed=None,  # I love it more than 42. What are you going to do about it? (submit a PR? :P)
+        seed=1026,  # I love it more than 42. What are you going to do about it? (submit a PR? :P)
 
         width=512,  # Make sure it's a multiple of 8.
         height=512,
@@ -315,6 +316,26 @@ def generate_images(
         # plt.show()
         # save_img_metadata_short(image, prompt, num_inference_steps, guidance_scale)
         # np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), init_latent.cpu().numpy())
+    elif execution_mode == execution_mode.IMG_TO_IMG:
+        # Get latent 1
+        init_latent = torch.from_numpy(np.load(src_latent_path)).to(device)
+        # Get prompt: prompt= "North Korean President Kim Jong Un is giving a speech.
+        # Using fixed seed
+
+        # Get latent 2
+        with autocast(device):
+            image = pipe(  # Diffuse magic.
+                prompt,
+                num_inference_steps=num_inference_steps,
+                latents=init_latent,
+                guidance_scale=guidance_scale
+            )["sample"][0]
+    
+        save_img_metadata_short(image, prompt, num_inference_steps, guidance_scale)
+        np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), init_latent.cpu().numpy())
+        # Decode that to get image
+
+
 
     else:
         print(f'Execution mode {execution_mode} not supported.')
