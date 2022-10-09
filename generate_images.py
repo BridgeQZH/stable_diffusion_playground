@@ -38,6 +38,9 @@ class ExecutionMode(enum.Enum):
 EXIF_KEY = 'user_comment'  # This is where we store metadata if `save_metadata_to_img` set to True.
 device = "cuda"
 
+vae = AutoencoderKL.from_pretrained(
+        'CompVis/stable-diffusion-v1-4', subfolder='vae', use_auth_token=True)
+vae = vae.to(device)
 
 def interpolate(t, v0, v1, DOT_THRESHOLD=0.9995):
     """Helper function to (spherically) interpolate two arrays v1 v2.
@@ -114,7 +117,8 @@ def encode_img_latents(imgs):
     img_arr = torch.from_numpy(img_arr).float().permute(0, 3, 1, 2)
     img_arr = 2 * (img_arr - 0.5)
     
-    # 1. Load the autoencoder model which will be used to decode the latents into image space. 
+    # 1. Load the autoencoder model which will be used to decode the latents into image space.
+
     latent_dists = vae.encode(img_arr.to(device))
     # latent_samples = latent_dists.sample()
     # latent_dists *= 0.18215
@@ -176,9 +180,7 @@ def generate_images(
 
     # Create a scheduler for inference Hardcoded the recommended scheduler - feel free to play with it.
     lms = LMSDiscreteScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear")
-    vae = AutoencoderKL.from_pretrained(
-        'CompVis/stable-diffusion-v1-4', subfolder='vae', use_auth_token=True)
-    vae = vae.to(device)
+    
     
 
     # 2. Load the tokenizer and text encoder to tokenize and encode the text. 
@@ -295,7 +297,8 @@ def generate_images(
         np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents.cpu().numpy())
         print("successfully saved")
         # call REPRODUCE to generate from that npy
-        # init_latent = Read upper npy file
+        src_latent_path_new = ""
+        init_latent = torch.from_numpy(np.load(src_latent_path_new)).to(device)
         # with autocast(device):
         #     image = pipe(
         #         **metadata,
