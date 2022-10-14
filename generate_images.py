@@ -137,7 +137,7 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
             json.dump(metadata, metadata_file)
 
 def generate_images(
-        output_dir_name='REPRODUCE_MULTI_1st_time',  # Name of the output directory.
+        output_dir_name='REPRODUCE_MULTI_2nd_time',  # Name of the output directory.
         execution_mode=ExecutionMode.REPRODUCE_MULTI,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=10,  # How many images you want to generate in this run.
         
@@ -328,7 +328,7 @@ def generate_images(
 
         metadata = extract_metadata(metadata_path)
         print(f'Found metadata info:\n{metadata}')
-        number_imgs = 125
+        number_imgs = 10
         for i in range(number_imgs):
             src_latent_path = "/content/drive/MyDrive/A_magazine/history_imgs/converted_latents/img_{:0>3}.npy".format(i)
             init_latent = torch.from_numpy(np.load(src_latent_path)).to(device)
