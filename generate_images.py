@@ -138,8 +138,8 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
             json.dump(metadata, metadata_file)
 
 def generate_images(
-        output_dir_name='IMG_TO_LATENT_Diverse',  # Name of the output directory.
-        execution_mode=ExecutionMode.IMG_TO_LATENT,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        output_dir_name='SPECIFIC_DIVERSE_random_kim_1st_time',  # Name of the output directory.
+        execution_mode=ExecutionMode.SPECIFIC_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=10,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
@@ -225,7 +225,7 @@ def generate_images(
     elif execution_mode == execution_mode.SPECIFIC_DIVERSE:
         for i in range(num_imgs):
             print(f'Generating {i+1}. image.')
-            src_latent_path = "/content/drive/MyDrive/A_magazine/history_imgs/converted_latents/img_{:0>3}.npy".format(i)
+            src_latent_path = "/content/drive/MyDrive/A_magazine/history_imgs/converted_latents/img_{:0>6}.npy".format(i)
             init_latent = torch.from_numpy(np.load(src_latent_path)).to(device)
 
             with autocast(device):
