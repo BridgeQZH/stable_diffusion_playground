@@ -138,7 +138,7 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
             json.dump(metadata, metadata_file)
 
 def generate_images(
-        output_dir_name='SPECIFIC_DIVERSE_1st_time',  # Name of the output directory.
+        output_dir_name='SPECIFIC_DIVERSE_2nd_time',  # Name of the output directory.
         execution_mode=ExecutionMode.SPECIFIC_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=10,  # How many images you want to generate in this run.
         
@@ -151,7 +151,7 @@ def generate_images(
         # At the end of the successful event, President Rouhani was invited to have lunch at some undisclosed restaurant in Taipei City.
 
         prompt= "North Korean President Kim Jong Un is giving a speech.",  # Unleash your inner neural network whisperer.
-        num_inference_steps=20,  # More (e.g. 100, 200 etc) can create slightly better images.
+        num_inference_steps=100,  # More (e.g. 100, 200 etc) can create slightly better images.
         guidance_scale=7.5,  # Complete black magic. Usually somewhere between 3-10 is good - but experiment!
         seed=1026,  # I love it more than 42. What are you going to do about it? (submit a PR? :P)
 
