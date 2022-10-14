@@ -136,9 +136,9 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
             json.dump(metadata, metadata_file)
 
 def generate_images(
-        output_dir_name='IMG_TO_LATENT_6th_time',  # Name of the output directory.
-        execution_mode=ExecutionMode.IMG_TO_LATENT,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
-        num_imgs=2,  # How many images you want to generate in this run.
+        output_dir_name='GENERATE_DIVERSE_6th_time',  # Name of the output directory.
+        execution_mode=ExecutionMode.GENERATE_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        num_imgs=10,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
         # The whole paragraph is this:
@@ -157,7 +157,8 @@ def generate_images(
         height=512,
         # they are all parameters passing into generate_images function
         src_img_path = "/content/stable_diffusion_playground/selected_imgs/speech/real_speech_1.png",
-        src_latent_path = "/content/test.npy",
+        # src_latent_path = "/content/test.npy",
+        src_latent_path = None,
         trg_latent_path = None,
         # src_latent_path="/content/stable_diffusion_playground/output/20_inference_step_seed_none_Kim_speech_check_meta/latents/000001.npy",  # Set the latent of the 2 images you like (useful for INTERPOLATE mode).
         # trg_latent_path="/content/stable_diffusion_playground/output/Kim_Jong_Un_Hassan_Rouhani/latents/000019.npy",
