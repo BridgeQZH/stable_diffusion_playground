@@ -161,7 +161,7 @@ def generate_images(
         trg_latent_path = None,
         # src_latent_path="/content/stable_diffusion_playground/output/20_inference_step_seed_none_Kim_speech_check_meta/latents/000001.npy",  # Set the latent of the 2 images you like (useful for INTERPOLATE mode).
         # trg_latent_path="/content/stable_diffusion_playground/output/Kim_Jong_Un_Hassan_Rouhani/latents/000019.npy",
-        metadata_path= "/content/stable_diffusion_playground/output/img_to_latent_2nd_time/metadata/000000.json",  # Used only in the REPRODUCE mode.
+        metadata_path= "/content/000000.json",  # Used only in the REPRODUCE mode.
         # metadata_path = None,
 
         ##### you'll set this one once and never touch it again depending on your HW #####
