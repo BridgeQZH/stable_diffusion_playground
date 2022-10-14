@@ -294,9 +294,9 @@ def generate_images(
         print("finish loading the image")
         # Get the latent variable for that image
         init_latent = encode_img_latents([loaded_image])
-        print(init_latent)
-        print(type(init_latent))
-        np.save("/content/test.npy", init_latent.cpu.detach().numpy())
+        print(init_latent) # device='cuda:0', grad_fn=<MulBackward0>)
+        print(type(init_latent)) # <class 'torch.Tensor'>
+        np.save("/content/test.npy", init_latent.cpu().detach().numpy())
         print(init_latent)
         print("finish printing the latent of the image")
 
