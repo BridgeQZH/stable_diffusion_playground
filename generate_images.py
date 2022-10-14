@@ -138,7 +138,7 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
             json.dump(metadata, metadata_file)
 
 def generate_images(
-        output_dir_name='SPECIFIC_DIVERSE_2nd_time',  # Name of the output directory.
+        output_dir_name='SPECIFIC_DIVERSE_3rd_time',  # Name of the output directory.
         execution_mode=ExecutionMode.SPECIFIC_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=10,  # How many images you want to generate in this run.
         
@@ -150,8 +150,8 @@ def generate_images(
         # Iran advised North Korea to be wary of negotiating with US President Donald Trump following his withdrawal from the landmark 2015 nuclear agreement.
         # At the end of the successful event, President Rouhani was invited to have lunch at some undisclosed restaurant in Taipei City.
 
-        prompt= "North Korean President Kim Jong Un is giving a speech.",  # Unleash your inner neural network whisperer.
-        num_inference_steps=100,  # More (e.g. 100, 200 etc) can create slightly better images.
+        prompt= "At the end of the successful event, President Rouhani was invited to have lunch at some undisclosed restaurant in Taipei City",  # Unleash your inner neural network whisperer.
+        num_inference_steps=20,  # More (e.g. 100, 200 etc) can create slightly better images.
         guidance_scale=7.5,  # Complete black magic. Usually somewhere between 3-10 is good - but experiment!
         seed=1026,  # I love it more than 42. What are you going to do about it? (submit a PR? :P)
 
@@ -310,7 +310,7 @@ def generate_images(
         img_latents = encode_img_latents([image])
         print(img_latents)
     elif execution_mode == execution_mode.IMG_TO_LATENT:
-        number_imgs = 125
+        number_imgs = 125 # 5s video, FPS 25
         for i in range(number_imgs):
             src_img_path = "/content/stable_diffusion_playground/selected_imgs/speech/video/{:0>3}.png".format(i)
             im = Image.open(src_img_path).convert('RGB')
