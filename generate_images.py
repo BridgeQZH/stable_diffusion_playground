@@ -294,7 +294,7 @@ def generate_images(
         print("finish loading the image")
         # Get the latent variable for that image
         init_latent = encode_img_latents([loaded_image])
-        np.save("/content/test.npy", init_latent.detach().numpy())
+        np.save("/content/test.npy", init_latent.cpu.detach().numpy())
         print(init_latent)
         print("finish printing the latent of the image")
 
