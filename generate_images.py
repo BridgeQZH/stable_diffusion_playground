@@ -287,7 +287,7 @@ def generate_images(
     elif execution_mode == execution_mode.IMG_TO_LATENT:
         number_imgs = 125
         for i in range(number_imgs):
-            src_img_path = "/content/stable_diffusion_playground/selected_imgs/speech/{:0>3}.png".format(i)
+            src_img_path = "/content/stable_diffusion_playground/selected_imgs/speech/video/{:0>3}.png".format(i)
             im = Image.open(src_img_path).convert('RGB')
             a = np.asarray(im)
             loaded_image = Image.fromarray(a)
