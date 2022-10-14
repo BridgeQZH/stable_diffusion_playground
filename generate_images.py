@@ -34,7 +34,8 @@ class ExecutionMode(enum.Enum):
     TEST_LATENT = 3,
     IMG_TO_LATENT = 4,
     MULTI_TO_MULTI = 5,
-    IMG_TO_IMG = 6
+    IMG_TO_IMG = 6,
+    REPRODUCE_MULTI = 7
 
 EXIF_KEY = 'user_comment'  # This is where we store metadata if `save_metadata_to_img` set to True.
 device = "cuda"
@@ -136,8 +137,8 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
             json.dump(metadata, metadata_file)
 
 def generate_images(
-        output_dir_name='GENERATE_DIVERSE_6th_time',  # Name of the output directory.
-        execution_mode=ExecutionMode.GENERATE_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        output_dir_name='REPRODUCE_MULTI_1st_time',  # Name of the output directory.
+        execution_mode=ExecutionMode.REPRODUCE_MULTI,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=10,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
@@ -321,6 +322,28 @@ def generate_images(
         # img_latents = encode_img_latents([image])
         # np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents, allow_pickle=True)
         # print("successfully loaded image latent value")
+    elif execution_mode == execution_mode.REPRODUCE_MULTI:
+        assert src_latent_path, 'You need to provide the latent path if you wish to reproduce an image.'
+        assert metadata_path, 'You need to provide the metadata file/image with metadata if you wish to reproduce an image.'
+
+        metadata = extract_metadata(metadata_path)
+        print(f'Found metadata info:\n{metadata}')
+        number_imgs = 125
+        for i in range(number_imgs):
+            src_latent_path = "converted_latents/img_{:0>3}.npy".format(i)
+            init_latent = torch.from_numpy(np.load(src_latent_path)).to(device)
+
+            with autocast(device):
+                image = pipe(
+                    **metadata,
+                    latents=init_latent,
+                    # output_type='npy', # As long as it's not pil it'll return numpy with the current imp (0.2.4) of StableDiffusionPipeline.
+                )["sample"][0]
+
+            # plt.imshow((image * 255).astype(np.uint8))
+            # plt.show()
+            save_img_metadata_short(image, prompt, num_inference_steps, guidance_scale)
+            np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), init_latent.cpu().numpy())
 
     elif execution_mode == execution_mode.IMG_TO_IMG:
         number_imgs = 125
