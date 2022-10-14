@@ -136,8 +136,8 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
             json.dump(metadata, metadata_file)
 
 def generate_images(
-        output_dir_name='REPRODUCE_5th_time',  # Name of the output directory.
-        execution_mode=ExecutionMode.REPRODUCE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        output_dir_name='IMG_TO_LATENT_6th_time',  # Name of the output directory.
+        execution_mode=ExecutionMode.IMG_TO_LATENT,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=2,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
@@ -285,26 +285,60 @@ def generate_images(
         img_latents = encode_img_latents([image])
         print(img_latents)
     elif execution_mode == execution_mode.IMG_TO_LATENT:
+        number_imgs = 125
+        for i in range(number_imgs):
+            src_img_path = "/content/stable_diffusion_playground/selected_imgs/speech/{:0>3}.png".format(i)
+            im = Image.open(src_img_path).convert('RGB')
+            a = np.asarray(im)
+            loaded_image = Image.fromarray(a)
+            print("finish loading the image_{:0>3}.png".format(i))
+            init_latent = encode_img_latents([loaded_image])
+            # print(init_latent) # device='cuda:0', grad_fn=<MulBackward0>)
+            # print(type(init_latent)) # <class 'torch.Tensor'>
+            np.save("/content/converted_latents/img_{:0>3}.npy".format(i), init_latent.cpu().detach().numpy())
+            # print(init_latent)
+            print("finish saving the latent of the image_{:0>3}.png".format(i))
+
+
+        ############### Working Code ##################
         # Load one image
         # From official document
-        im = Image.open(src_img_path).convert('RGB')
-        a = np.asarray(im)
-        loaded_image = Image.fromarray(a)
-        print(loaded_image)
-        print("finish loading the image")
-        # Get the latent variable for that image
-        init_latent = encode_img_latents([loaded_image])
-        print(init_latent) # device='cuda:0', grad_fn=<MulBackward0>)
-        print(type(init_latent)) # <class 'torch.Tensor'>
-        np.save("/content/test.npy", init_latent.cpu().detach().numpy())
-        print(init_latent)
-        print("finish printing the latent of the image")
+        # im = Image.open(src_img_path).convert('RGB')
+        # a = np.asarray(im)
+        # loaded_image = Image.fromarray(a)
+        # print(loaded_image)
+        # print("finish loading the image")
+        # # Get the latent variable for that image
+        # init_latent = encode_img_latents([loaded_image])
+        # print(init_latent) # device='cuda:0', grad_fn=<MulBackward0>)
+        # print(type(init_latent)) # <class 'torch.Tensor'>
+        # np.save("/content/test.npy", init_latent.cpu().detach().numpy())
+        # print(init_latent)
+        # print("finish printing the latent of the image")
+        ############### Working Code ##################
 
         # img_latents = encode_img_latents([image])
         # np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), img_latents, allow_pickle=True)
         # print("successfully loaded image latent value")
 
     elif execution_mode == execution_mode.IMG_TO_IMG:
+        number_imgs = 125
+        for i in range(number_imgs):
+            src_img_path = "/content/stable_diffusion_playground/selected_imgs/speech/real_speech_{:0>3}.png".format(i)
+            im = Image.open(src_img_path).convert('RGB')
+            a = np.asarray(im)
+            loaded_image = Image.fromarray(a)
+            print("finish loading the image_{:0>3}.png".format(i))
+            init_latent = encode_img_latents([loaded_image])
+            # print(init_latent) # device='cuda:0', grad_fn=<MulBackward0>)
+            # print(type(init_latent)) # <class 'torch.Tensor'>
+            np.save("/content/img_{:0>3}.npy".format(i), init_latent.cpu().detach().numpy())
+            # print(init_latent)
+            print("finish saving the latent of the image_{:0>3}.png".format(i))
+
+
+
+
         # Get latent 1
         init_latent = torch.from_numpy(np.load(src_latent_path, allow_pickle=True)).to(device)
         print("successfully load latent file")
