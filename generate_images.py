@@ -312,17 +312,17 @@ def generate_images(
     elif execution_mode == execution_mode.IMG_TO_LATENT:
         number_imgs = 16 # 5s video, FPS 25
         for i in range(number_imgs):
-            src_img_path = "/content/stable_diffusion_playground/selected_imgs/random_Kim/{:0>6}.png".format(i)
+            src_img_path = "/content/stable_diffusion_playground/selected_imgs/random_Kim/{:0>6}.jpg".format(i)
             im = Image.open(src_img_path).convert('RGB')
             a = np.asarray(im)
             loaded_image = Image.fromarray(a)
-            print("finish loading the image_{:0>6}.png".format(i))
+            print("finish loading the image_{:0>6}.jpg".format(i))
             init_latent = encode_img_latents([loaded_image])
             # print(init_latent) # device='cuda:0', grad_fn=<MulBackward0>)
             # print(type(init_latent)) # <class 'torch.Tensor'>
             np.save("/content/converted_latents/img_{:0>6}.npy".format(i), init_latent.cpu().detach().numpy())
             # print(init_latent)
-            print("finish saving the latent of the image_{:0>6}.png".format(i))
+            print("finish saving the latent of the image_{:0>6}.jpg".format(i))
 
 
         ############### Working Code ##################
