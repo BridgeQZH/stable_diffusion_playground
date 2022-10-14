@@ -159,7 +159,7 @@ def generate_images(
         # they are all parameters passing into generate_images function
         src_img_path = "/content/stable_diffusion_playground/selected_imgs/speech/real_speech_1.png",
         # src_latent_path = "/content/test.npy",
-        src_latent_path = None,
+        src_latent_path = "/content/drive/MyDrive/A_magazine/history_imgs/converted_latents/img_000.npy",
         trg_latent_path = None,
         # src_latent_path="/content/stable_diffusion_playground/output/20_inference_step_seed_none_Kim_speech_check_meta/latents/000001.npy",  # Set the latent of the 2 images you like (useful for INTERPOLATE mode).
         # trg_latent_path="/content/stable_diffusion_playground/output/Kim_Jong_Un_Hassan_Rouhani/latents/000019.npy",
@@ -330,9 +330,9 @@ def generate_images(
         print(f'Found metadata info:\n{metadata}')
         number_imgs = 125
         for i in range(number_imgs):
-            src_latent_path = "converted_latents/img_{:0>3}.npy".format(i)
+            src_latent_path = "/content/drive/MyDrive/A_magazine/history_imgs/converted_latents/img_{:0>3}.npy".format(i)
             init_latent = torch.from_numpy(np.load(src_latent_path)).to(device)
-
+            print("finish loading the latent of image_{:0>3}.png".format(i))
             with autocast(device):
                 image = pipe(
                     **metadata,
