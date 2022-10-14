@@ -35,7 +35,8 @@ class ExecutionMode(enum.Enum):
     IMG_TO_LATENT = 4,
     MULTI_TO_MULTI = 5,
     IMG_TO_IMG = 6,
-    REPRODUCE_MULTI = 7
+    REPRODUCE_MULTI = 7,
+    SPECIFIC_DIVERSE = 8,
 
 EXIF_KEY = 'user_comment'  # This is where we store metadata if `save_metadata_to_img` set to True.
 device = "cuda"
@@ -137,8 +138,8 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
             json.dump(metadata, metadata_file)
 
 def generate_images(
-        output_dir_name='REPRODUCE_MULTI_4th_time',  # Name of the output directory.
-        execution_mode=ExecutionMode.REPRODUCE_MULTI,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        output_dir_name='SPECIFIC_DIVERSE_1st_time',  # Name of the output directory.
+        execution_mode=ExecutionMode.SPECIFIC_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=10,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
@@ -220,6 +221,28 @@ def generate_images(
             # print(image) # <PIL.Image.Image image mode=RGB size=512x512 at 0x7F3DC12BCE90>
             save_img_metadata_short(image, prompt, num_inference_steps, guidance_scale)
             np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), init_latent.cpu().numpy())
+
+    elif execution_mode == execution_mode.SPECIFIC_DIVERSE:
+        for i in range(num_imgs):
+            print(f'Generating {i+1}. image.')
+            src_latent_path = "/content/drive/MyDrive/A_magazine/history_imgs/converted_latents/img_{:0>3}.npy".format(i)
+            init_latent = torch.from_numpy(np.load(src_latent_path)).to(device)
+
+            with autocast(device):
+                image = pipe(  # Diffuse magic.
+                    prompt,
+                    num_inference_steps=num_inference_steps,
+                    latents=init_latent,
+                    guidance_scale=guidance_scale
+                )["sample"][0]
+
+            # Make sure generation is reproducible by saving the latent and metadata.
+            # TODO: is there some clever python mechanism that can enable me to automatically fetch all input arg names & passed values?
+            # Couldn't find anything in inspect...
+            # print(image) # <PIL.Image.Image image mode=RGB size=512x512 at 0x7F3DC12BCE90>
+            save_img_metadata_short(image, prompt, num_inference_steps, guidance_scale)
+            np.save(os.path.join(latents_dir, generate_name(latents_dir, suffix='npy')), init_latent.cpu().numpy())
+
 
     elif execution_mode == execution_mode.INTERPOLATE:
         if src_latent_path and trg_latent_path:
