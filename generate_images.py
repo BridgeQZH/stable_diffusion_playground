@@ -138,8 +138,8 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
             json.dump(metadata, metadata_file)
 
 def generate_images(
-        output_dir_name='SPECIFIC_DIVERSE_3rd_time',  # Name of the output directory.
-        execution_mode=ExecutionMode.SPECIFIC_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        output_dir_name='IMG_TO_LATENT_Diverse',  # Name of the output directory.
+        execution_mode=ExecutionMode.IMG_TO_LATENT,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=10,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
@@ -310,19 +310,19 @@ def generate_images(
         img_latents = encode_img_latents([image])
         print(img_latents)
     elif execution_mode == execution_mode.IMG_TO_LATENT:
-        number_imgs = 125 # 5s video, FPS 25
+        number_imgs = 16 # 5s video, FPS 25
         for i in range(number_imgs):
-            src_img_path = "/content/stable_diffusion_playground/selected_imgs/speech/video/{:0>3}.png".format(i)
+            src_img_path = "/content/stable_diffusion_playground/selected_imgs/random_Kim/{:0>6}.png".format(i)
             im = Image.open(src_img_path).convert('RGB')
             a = np.asarray(im)
             loaded_image = Image.fromarray(a)
-            print("finish loading the image_{:0>3}.png".format(i))
+            print("finish loading the image_{:0>6}.png".format(i))
             init_latent = encode_img_latents([loaded_image])
             # print(init_latent) # device='cuda:0', grad_fn=<MulBackward0>)
             # print(type(init_latent)) # <class 'torch.Tensor'>
-            np.save("/content/converted_latents/img_{:0>3}.npy".format(i), init_latent.cpu().detach().numpy())
+            np.save("/content/converted_latents/img_{:0>6}.npy".format(i), init_latent.cpu().detach().numpy())
             # print(init_latent)
-            print("finish saving the latent of the image_{:0>3}.png".format(i))
+            print("finish saving the latent of the image_{:0>6}.png".format(i))
 
 
         ############### Working Code ##################
