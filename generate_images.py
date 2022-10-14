@@ -138,8 +138,8 @@ def save_img_metadata(save_metadata_to_img, meta_dir, imgs_dir, image, prompt, n
             json.dump(metadata, metadata_file)
 
 def generate_images(
-        output_dir_name='SPECIFIC_DIVERSE_random_kim_1st_time',  # Name of the output directory.
-        execution_mode=ExecutionMode.SPECIFIC_DIVERSE,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
+        output_dir_name='IMG_TO_LATENT_random_kim_2nd_time',  # Name of the output directory.
+        execution_mode=ExecutionMode.IMG_TO_LATENT,  # Choose between diverse generation and interpolation. REPRODUCE, INTERPOLATE and GENERATE_DIVERSE
         num_imgs=10,  # How many images you want to generate in this run.
         
         ##### main args for controlling the generation #####
@@ -320,7 +320,7 @@ def generate_images(
             init_latent = encode_img_latents([loaded_image])
             # print(init_latent) # device='cuda:0', grad_fn=<MulBackward0>)
             # print(type(init_latent)) # <class 'torch.Tensor'>
-            np.save("/content/converted_latents/img_{:0>6}.npy".format(i), init_latent.cpu().detach().numpy())
+            np.save("/content/converted_latents/img_{:0>6}.npy".format(i), init_latent.cpu().numpy())
             # print(init_latent)
             print("finish saving the latent of the image_{:0>6}.jpg".format(i))
 
